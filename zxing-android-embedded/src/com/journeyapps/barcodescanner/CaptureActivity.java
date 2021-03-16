@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.KeyEvent;
+import android.view.WindowManager;
 
+import com.google.zxing.client.android.BuildConfig;
 import com.google.zxing.client.android.R;
 
 /**
@@ -18,11 +20,19 @@ public class CaptureActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        preventScreenShot();
+
         barcodeScannerView = initializeContent();
 
         capture = new CaptureManager(this, barcodeScannerView);
         capture.initializeFromIntent(getIntent(), savedInstanceState);
         capture.decode();
+    }
+
+    private void preventScreenShot() {
+        // Secure screen for production only
+        if (!BuildConfig.DEBUG)
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
     }
 
     /**
